@@ -1,0 +1,46 @@
+name = "cm-funnel"
+main = "worker/src/index.ts"
+compatibility_date = "2025-06-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Static assets served from the built client
+[assets]
+directory = "./dist/client"
+binding = "ASSETS"
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "cm-funnel-db"
+database_id = "98ea1634-73dc-4b3c-9aa5-7b91d162e41a"
+migrations_dir = "migrations"
+
+# KV Namespace for session/cache storage
+[[kv_namespaces]]
+binding = "KV"
+id = "606e40708ed04667b258426403d396ed"
+
+# Environment variables (non-secret)
+[vars]
+ENVIRONMENT = "production"
+FUNNEL_NAME = "CM Funnel"
+
+# Secrets (set via `wrangler secret put <KEY>`)
+# SUPABASE_URL
+# SUPABASE_ANON_KEY
+# SUPABASE_SERVICE_ROLE_KEY
+# JWT_SECRET
+
+# Development overrides
+[env.development]
+vars = { ENVIRONMENT = "development" }
+
+[[env.development.d1_databases]]
+binding = "DB"
+database_name = "cm-funnel-db"
+database_id = "98ea1634-73dc-4b3c-9aa5-7b91d162e41a"
+migrations_dir = "migrations"
+
+[[env.development.kv_namespaces]]
+binding = "KV"
+id = "606e40708ed04667b258426403d396ed"
