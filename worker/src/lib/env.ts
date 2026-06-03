@@ -27,4 +27,10 @@ export interface Env {
   SUPABASE_SERVICE_ROLE_KEY?: string;
   /** JWT signing secret */
   JWT_SECRET?: string;
+
+  /** GoHighLevel Private Integration Token */
+  GHL_API_KEY?: string;
+
+  /** GoHighLevel Location ID */
+  GHL_LOCATION_ID?: string;
 }

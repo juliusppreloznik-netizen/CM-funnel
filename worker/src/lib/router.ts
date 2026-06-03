@@ -23,10 +23,10 @@ export async function router(
     if (path === "/api/health" && method === "GET") {
       response = await handleHealth(request, env);
     } else if (path === "/api/leads" && method === "POST") {
-      response = await handleCreateLead(request, env);
+      response = await handleCreateLead(request, env, ctx);
     } else if (path.match(/^\/api\/leads\/[^/]+$/) && method === "PATCH") {
       const id = path.split("/").pop()!;
-      response = await handleUpdateLead(request, env, id);
+      response = await handleUpdateLead(request, env, ctx, id);
     } else {
       response = jsonError("Not found", 404);
     }

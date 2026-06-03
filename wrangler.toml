@@ -30,6 +30,8 @@ FUNNEL_NAME = "CM Funnel"
 # SUPABASE_ANON_KEY
 # SUPABASE_SERVICE_ROLE_KEY
 # JWT_SECRET
+# GHL_API_KEY
+# GHL_LOCATION_ID
 
 # Development overrides
 [env.development]

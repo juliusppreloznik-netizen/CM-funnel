@@ -1,6 +1,7 @@
 import type { Env } from "../lib/env";
 import { json, jsonError } from "../lib/response";
 import { partialLeadSchema } from "@shared/validation/funnel";
+import { upsertGhlContact } from "../lib/ghl";
 
 /**
  * POST /api/leads
@@ -9,7 +10,8 @@ import { partialLeadSchema } from "@shared/validation/funnel";
  */
 export async function handleCreateLead(
   request: Request,
-  env: Env
+  env: Env,
+  ctx: ExecutionContext
 ): Promise<Response> {
   let body: unknown;
   try {
@@ -78,6 +80,23 @@ export async function handleCreateLead(
     )
     .run();
 
+  // Sync to GHL (non-blocking — failure does not affect the API response)
+  ctx.waitUntil(
+    upsertGhlContact(
+      {
+        ...data,
+        id,
+        utmSource: utmSource ?? undefined,
+        utmMedium: utmMedium ?? undefined,
+        utmCampaign: utmCampaign ?? undefined,
+        utmContent: utmContent ?? undefined,
+        utmTerm: utmTerm ?? undefined,
+        ipAddress: ipAddress ?? undefined,
+      },
+      env
+    )
+  );
+
   return json({ id }, 201);
 }
 
@@ -88,6 +107,7 @@ export async function handleCreateLead(
 export async function handleUpdateLead(
   request: Request,
   env: Env,
+  ctx: ExecutionContext,
   id: string
 ): Promise<Response> {
   let body: unknown;
@@ -152,6 +172,11 @@ export async function handleUpdateLead(
   if (result.meta.changes === 0) {
     return jsonError("Lead not found", 404);
   }
+
+  // Sync update to GHL (non-blocking)
+  ctx.waitUntil(
+    upsertGhlContact({ ...data, id }, env)
+  );
 
   return json({ id });
 }
